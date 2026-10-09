@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PriorityAI | Enterprise Incident & SLA Priority Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #f8fafc 0%, #edf2f7 60%, #e2e8f0 100%);
+            font-family: var(--font-main);
+            color: #0f172a;
+            overflow-x: hidden;
+            letter-spacing: -0.015em;
+        }
+
+        /* Ambient Dynamic Light Orbs */
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            opacity: 0.6;
+            pointer-events: none;
+            animation: floatOrb 12s ease-in-out infinite alternate;
+        }
+        .orb-1 { width: 520px; height: 520px; background: rgba(99, 102, 241, 0.18); top: 0%; left: 8%; }
+        .orb-2 { width: 460px; height: 460px; background: rgba(192, 132, 252, 0.18); bottom: 5%; right: 8%; animation-delay: -6s; }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0px, 0px) scale(1); }
+            100% { transform: translate(-35px, -45px) scale(1.08); }
+        }
+
+        /* Specular Liquid Glassmorphism Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 
+                0 20px 45px -15px rgba(15, 23, 42, 0.06),
+                0 4px 12px -2px rgba(15, 23, 42, 0.02),
+                inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        }
+
+        .glass-card-hover {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 
+                0 25px 50px -12px rgba(15, 23, 42, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 1);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+        }
+
+        /* Polished Form Inputs */
+        .glass-input {
+            background: rgba(248, 250, 252, 0.75);
+            border: 1px solid rgba(203, 213, 225, 0.7);
+            color: #0f172a;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-input:focus {
+            background: #ffffff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+            outline: none;
+        }
+
+        /* Cupertino Button Accent */
+        .btn-apple {
+            background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%);
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            transition: all 0.2s ease;
+        }
+        .btn-apple:hover {
+            box-shadow: 0 14px 28px -4px rgba(79, 70, 229, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            transform: translateY(-1.5px);
+        }
+        .btn-apple:active {
+            transform: translateY(0);
+        }
+
+        /* Refined Typography */
+        .hero-glow-text {
+            background: linear-gradient(135deg, #0f172a 20%, #312e81 60%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Enforced Monospace SLAs */
+        .timer-safe { color: #0284c7; font-family: var(--font-mono); font-weight: 700; }
+        .timer-warning { color: #d97706; font-family: var(--font-mono); font-weight: 700; }
+        .timer-breached { color: #e11d48; font-family: var(--font-mono); font-weight: 800; animation: pulse 1.5s infinite; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative antialiased">
+
+    <!-- Ambient Orbs -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+
+    <!-- Top Navigation -->
+    <nav class="glass-nav px-6 py-4 flex justify-between items-center sticky top-0 z-40">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('landing')">
+            <div class="bg-indigo-600 p-2.5 rounded-2xl text-white font-bold shadow-md shadow-indigo-600/30 flex items-center justify-center">
+                <i class="fa-solid fa-layer-group text-sm"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-lg font-extrabold tracking-tight text-slate-900">Priority<span class="text-indigo-600">AI</span></span>
+                    <span class="text-[9px] uppercase tracking-wider font-extrabold bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-200/80">PROD MVP</span>
+                </div>
+                <span class="block text-[10px] text-slate-500 font-semibold tracking-wider uppercase">Enterprise SLA & Incident Priority Engine</span>
+            </div>
+        </div>
+        
+        <div class="flex space-x-1.5 bg-slate-200/50 p-1.5 rounded-2xl border border-white/60 backdrop-blur-md">
+            <button onclick="switchTab('landing')" id="btn-landing" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white text-indigo-700 shadow-sm transition">
+                <i class="fa-solid fa-house mr-1.5"></i> Home
+            </button>
+            <button onclick="switchTab('customer')" id="btn-customer" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-user mr-1.5"></i> Customer Portal
+            </button>
+            <button onclick="openExecutiveModal()" id="btn-executive" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-headset mr-1.5"></i> Agent Workspace
+            </button>
+            <button onclick="openAdminModal()" id="btn-admin" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+                <i class="fa-solid fa-shield-halved mr-1.5"></i> Admin Radar
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 flex-1 w-full relative z-10 flex flex-col justify-center">
+
+        <!-- 0. Home Hero View -->
+        <section id="view-landing" class="py-8 space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-slate-200 text-indigo-700 text-xs font-bold shadow-sm backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+                     • AI-Based Complaint Priority System
+                </div>
+                
+                <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight hero-glow-text leading-[1.1]">
+                    Instant Grievance Triage.<br>Zero SLA Breaches.
+                </h1>
+                
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed font-normal max-w-2xl mx-auto">
+                    Multimodal visual intelligence meets mathematical risk prioritization. Instantly categorize disputes, calculate dynamic SLA timelines, and automate tiered escalations.
+                </p>
+
+                <!-- Primary Gateway CTA -->
+                <div class="flex flex-wrap justify-center items-center gap-4 pt-2">
+                    <button onclick="switchTab('customer')" class="btn-apple px-8 py-4 text-white rounded-2xl font-bold text-sm flex items-center gap-3">
+                        <span>Enter PriorityAI Intake</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                    <button onclick="openExecutiveModal()" class="px-6 py-4 glass-card hover:bg-white text-slate-800 rounded-2xl font-semibold text-sm flex items-center gap-2 transition border border-slate-200">
+                        <i class="fa-solid fa-headset text-indigo-600"></i>
+                        <span>Agent Login</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feature Highlight Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 max-w-5xl mx-auto">
+                <div class="glass-card glass-card-hover p-6 rounded-3xl space-y-3">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Multimodal AI Triage</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-normal">
+                        Extracts context and proof photos instantly to assign severity (1–5) and route to specialized departments.
+                    </p>
+                </div>
+
+                <div class="glass-card glass-card-hover p-6 rounded-3xl space-y-3">
+                    <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shadow-sm">
+                        <i class="fa-solid fa-stopwatch"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Dynamic SLA Radar</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-normal">
+                        Live countdown clocks with urgency-ranked queue reordering to eliminate costly SLA breach penalties.
+                    </p>
+                </div>
+
+                <div class="glass-card glass-card-hover p-6 rounded-3xl space-y-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                        <i class="fa-solid fa-diagram-project"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 text-base">Tiered Escalation Matrix</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-normal">
+                        Frontline executives handle first contact, escalating directly to the Admin Command Center when needed.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1. Customer Portal View -->
+        <section id="view-customer" class="hidden space-y-6 flex justify-center">
+            <div class="glass-card p-8 rounded-3xl w-full max-w-2xl border border-white">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+                    <h2 class="text-xl font-bold flex items-center gap-2.5 text-slate-900">
+                        <i class="fa-solid fa-headset text-indigo-600"></i> Submit Grievance
+                    </h2>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-200 font-bold">
+                        <i class="fa-solid fa-bolt mr-1"></i> AI Auto-Triage Active
+                    </span>
+                </div>
+                <form id="grievanceForm" class="space-y-5">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1.5 font-bold">Customer Name / ID</label>
+                        <input type="text" id="customer_name" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="e.g. Athithya (CUST-101)">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1.5 font-bold">Order / Transaction ID</label>
+                        <input type="text" id="order_id" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="e.g. NSD-2026">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1.5 font-bold">Describe Your Issue</label>
+                        <textarea id="description" rows="4" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="e.g. Online Payment Failed..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1.5 font-bold">Upload Proof (Screenshot / Damage Photo)</label>
+                        <input type="file" id="proof_image" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer glass-input rounded-2xl">
+                    </div>
+                    <button type="submit" id="submitBtn" class="w-full btn-apple text-white font-bold py-3.5 rounded-2xl transition flex items-center justify-center gap-2">
+                        <span>Submit Grievance to AI Engine</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </form>
+
+                <div id="resultCard" class="hidden mt-6 bg-white border border-indigo-200 p-6 rounded-2xl shadow-xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="bg-emerald-50 text-emerald-700 text-xs px-3 py-1 rounded-full border border-emerald-200 font-bold">
+                            <i class="fa-solid fa-check-circle mr-1"></i> Categorized & Routed to Agent
+                        </span>
+                        <span id="resTicketId" class="text-sm font-mono text-indigo-700 font-bold bg-slate-100 px-3 py-1 rounded-xl border border-slate-200">TKT-000000</span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-1 text-slate-900" id="resCategory">Category</h3>
+                    <p class="text-xs text-slate-600 mb-4" id="resDesc">Description summary...</p>
+                    <div class="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs mb-4">
+                        <div><span class="text-slate-500 block uppercase mb-0.5 font-bold">Assigned Dept</span><span id="resDept" class="font-bold text-slate-800">Support</span></div>
+                        <div><span class="text-slate-500 block uppercase mb-0.5 font-bold">Severity Meter</span><span id="resSeverity" class="font-bold text-slate-800">3 / 5</span></div>
+                        <div><span class="text-slate-500 block uppercase mb-0.5 font-bold">SLA Timeline</span><span id="resSla" class="font-bold text-indigo-600">24 Hours</span></div>
+                        <div><span class="text-slate-500 block uppercase mb-0.5 font-bold">Current Desk</span><span class="font-bold text-emerald-600">Customer Executive</span></div>
+                    </div>
+                    <button type="button" onclick="resetForm()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition border border-slate-300 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Submit Another Grievance
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Agent Resolution Workspace -->
+        <section id="view-executive" class="hidden space-y-6">
+            <div class="glass-card p-6 rounded-3xl flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-slate-900">
+                        <i class="fa-solid fa-headset text-indigo-600"></i> Agent Resolution Workspace
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5 font-medium">Live queue with real-time ticking SLA timers and 1-click AI response drafting.</p>
+                </div>
+                <button onclick="loadComplaints()" class="bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 shadow-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate"></i> Refresh Queue
+                </button>
+            </div>
+            
+            <div class="glass-card rounded-3xl overflow-hidden shadow-md">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                           <tr class="bg-slate-100/70 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200 font-bold">
+                                <th class="p-4">Ticket ID</th>
+                                <th class="p-4">Customer & Order</th>
+                                <th class="p-4">Category</th>
+                                <th class="p-4">Priority</th>
+                                <th class="p-4">Department</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Live SLA Timer</th>
+                                <th class="p-4">Proof</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="executiveTableBody" class="divide-y divide-slate-200/80 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Admin Command Center -->
+        <section id="view-admin" class="hidden space-y-6">
+            <div class="glass-card p-6 rounded-3xl flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold flex items-center gap-2 text-slate-900">
+                        <i class="fa-solid fa-shield-halved text-indigo-600"></i> Admin Command Center
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5 font-medium">Ranked queue by SLA breach urgency, severity 1-5 meter, and manual escalation control.</p>
+                </div>
+                <button onclick="loadComplaints()" class="bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 shadow-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate"></i> Reload Dashboard
+                </button>
+            </div>
+
+            <div class="glass-card rounded-3xl overflow-hidden shadow-md">
+                <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center text-xs">
+                    <span class="text-amber-800 font-bold flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Breach Urgency Ranked Queue</span>
+                    <span class="text-slate-500 font-semibold">Sorted by closest to SLA breach</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                           <tr class="bg-slate-100/70 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200 font-bold">
+                                <th class="p-4">Urgency Rank</th>
+                                <th class="p-4">Ticket ID</th>
+                                <th class="p-4">Customer</th>
+                                <th class="p-4">Severity (1-5)</th>
+                                <th class="p-4">Priority</th>
+                                <th class="p-4">Department</th>
+                                <th class="p-4">SLA Time Remaining</th>
+                                <th class="p-4">Proof</th>
+                                <th class="p-4 text-right">Escalation Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketTableBody" class="divide-y divide-slate-200/80 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Support Chat Widget -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button onclick="toggleChatWindow()" id="chatToggleBtn" class="btn-apple text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition border border-white">
+            <i class="fa-solid fa-robot text-2xl"></i>
+        </button>
+
+        <div id="chatWindow" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 glass-card rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-white">
+            <div class="bg-white/95 p-4 border-b border-slate-200 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="bg-indigo-600 p-1.5 rounded-xl text-white text-xs"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900">PriorityAI Copilot</h4>
+                        <span class="text-[10px] text-emerald-600 font-bold flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online</span>
+                    </div>
+                </div>
+                <button onclick="toggleChatWindow()" class="text-slate-400 hover:text-slate-600 text-sm"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="chatBox" class="p-4 h-72 overflow-y-auto space-y-3 text-xs bg-slate-50/60">
+                <div class="bg-white text-slate-700 p-3.5 rounded-2xl max-w-[85%] border border-slate-200 shadow-sm font-medium">
+                    👋 Hello! I am your AI triage assistant. Feel free to ask how our SLA resolution works or report any order issues!
+                </div>
+            </div>
+
+            <div class="p-3 bg-white/95 border-t border-slate-200 flex gap-2">
+                <input type="text" id="chatInput" placeholder="Type your issue..." class="flex-1 glass-input rounded-xl px-3.5 py-2 text-xs" onkeypress="if(event.key === 'Enter') sendChatQuery()">
+                <button type="button" onclick="sendChatQuery()" class="btn-apple text-white px-4 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proof Lightbox Modal -->
+    <div id="proofModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4" onclick="closeProofModal()">
+        <div class="glass-card p-4 rounded-3xl max-w-xl max-h-[85vh] flex flex-col items-center bg-white" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center w-full mb-3">
+                <span class="text-xs uppercase font-bold text-slate-500">Attached Proof Screenshot</span>
+                <button onclick="closeProofModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <img id="proofModalImg" src="" alt="Proof" class="rounded-2xl max-h-[70vh] object-contain border border-slate-200 shadow-sm">
+        </div>
+    </div>
+
+    <!-- AI Response Draft Modal -->
+    <div id="aiDraftModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-card p-6 rounded-3xl max-w-lg w-full space-y-4 bg-white">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2 text-indigo-600 font-bold text-sm">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> One-Click AI Response Draft
+                </div>
+                <button onclick="closeAiDraftModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <textarea id="aiDraftText" rows="6" class="w-full glass-input rounded-2xl p-3.5 text-xs text-slate-800"></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeAiDraftModal()" class="px-4 py-2 text-xs bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700 font-bold">Cancel</button>
+                <button onclick="sendAiDraft()" class="px-4 py-2 text-xs btn-apple text-white rounded-xl font-bold"><i class="fa-solid fa-paper-plane mr-1"></i> Send Resolution</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Auth Modal -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-card p-8 rounded-3xl max-w-md w-full bg-white">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-lock text-indigo-600"></i> Admin Authentication</h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form class="space-y-4" onsubmit="handleAdminLogin(event)">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1 font-bold">Admin ID</label>
+                    <input type="text" id="admin_id" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="Enter Admin ID">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1 font-bold">Password</label>
+                    <input type="password" id="admin_pwd" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="Enter Password">
+                </div>
+                <p id="loginError" class="text-xs text-rose-600 hidden font-bold">Invalid Admin Credentials!</p>
+                <button type="submit" class="w-full btn-apple text-white font-bold py-3.5 rounded-2xl transition">Authenticate Access</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Executive Auth Modal -->
+    <div id="execModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-card p-8 rounded-3xl max-w-md w-full bg-white">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-user-shield text-indigo-600"></i> Executive Portal Access</h3>
+                <button onclick="closeExecutiveModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form class="space-y-4" onsubmit="handleExecutiveLogin(event)">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1 font-bold">Executive ID</label>
+                    <input type="text" id="exec_id" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="e.g. agent_rahul">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1 font-bold">Password</label>
+                    <input type="password" id="exec_pwd" required class="w-full glass-input rounded-2xl p-3.5 text-sm" placeholder="Enter Password">
+                </div>
+                <p id="execLoginError" class="text-xs text-rose-600 hidden font-bold">Invalid Credentials! (Try: agent_rahul / agent123)</p>
+                <button type="submit" class="w-full btn-apple text-white font-bold py-3.5 rounded-2xl transition">Enter Workspace</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
